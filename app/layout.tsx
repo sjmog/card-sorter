@@ -14,10 +14,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "AI Team Roles Explorer",
+  title: "TechMap | AI Team Roles Explorer",
   description:
     "Interactive guide to understanding roles and responsibilities in modern AI teams. Explore how Data Engineers, ML Engineers, AI Engineers, and other specialists work together.",
   keywords: [
+    "TechMap",
     "AI teams",
     "Machine Learning roles",
     "Data Engineer",
@@ -30,18 +31,18 @@ export const metadata: Metadata = {
     "AI team structure",
     "AI careers",
   ],
-  authors: [{ name: "AI Team Roles Explorer" }],
+  authors: [{ name: "TechMap" }],
   openGraph: {
-    title: "AI Team Roles Explorer",
+    title: "TechMap | AI Team Roles Explorer",
     description:
       "Interactive guide to understanding roles and responsibilities in modern AI teams",
     type: "website",
     locale: "en_US",
-    siteName: "AI Team Roles Explorer",
+    siteName: "TechMap | AI Team Roles Explorer",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Team Roles Explorer",
+    title: "TechMap | AI Team Roles Explorer",
     description:
       "Interactive guide to understanding roles and responsibilities in modern AI teams",
   },
