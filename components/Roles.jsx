@@ -20,6 +20,7 @@ export default function Roles({ roles }) {
       <div className="space-y-8">
         {Object.entries(roles).map(([roleName, roleInfo]) => (
           <Role
+            key={roleName}
             roleName={roleName}
             roleInfo={roleInfo}
             activeRole={activeRole}
