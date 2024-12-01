@@ -178,35 +178,5 @@ export const roles = [
         output: "Explanation system, documentation templates, communication guidelines"
       }
     ]
-  },
-  {
-    name: "Rachel Wong",
-    role: "AI Product Manager",
-    color: "bg-red-500",
-    avatar: "/api/placeholder/48/48",
-    philosophy: "Drives product vision while balancing technical capabilities, business needs, and user requirements. Ensures alignment between stakeholders and maintains focus on delivering value.",
-    deliverables: [
-      {
-        title: "Product Requirements",
-        timeline: "Estimated: 10 days",
-        description: "Define comprehensive product requirements and success metrics.",
-        requirements: "Stakeholder input, market research, technical capabilities assessment",
-        output: "PRD document, success metrics, project timeline"
-      },
-      {
-        title: "Feature Prioritization",
-        timeline: "Estimated: 8 days",
-        description: "Develop feature roadmap and prioritization framework.",
-        requirements: "Product requirements, technical constraints, user feedback",
-        output: "Feature roadmap, prioritization matrix, release plan"
-      },
-      {
-        title: "Stakeholder Alignment",
-        timeline: "Estimated: Ongoing (initial 12 days)",
-        description: "Ensure alignment between technical teams, business stakeholders, and users.",
-        requirements: "Project status, stakeholder feedback, performance metrics",
-        output: "Status reports, alignment documents, communication plan"
-      }
-    ]
   }
 ];
