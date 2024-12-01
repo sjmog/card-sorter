@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { User, ChevronUp, ChevronDown } from "lucide-react";
+import { User, ChevronUp, ChevronDown, HelpCircle } from "lucide-react";
 import { roles } from "@/data";
+import { Modal } from "@/components/ui/modal";
 
 const ProjectPlanner = () => {
   // Add state to track used deliverables
@@ -18,6 +19,7 @@ const ProjectPlanner = () => {
   const [draggedItem, setDraggedItem] = useState(null);
   const [initialStartDay, setInitialStartDay] = useState(0);
   const [chartContainer, setChartContainer] = useState(null);
+  const [showHelp, setShowHelp] = useState(false);
 
   const GANTT_DAYS = 360;
   const GANTT_DAY_WIDTH = 50;
@@ -25,7 +27,7 @@ const ProjectPlanner = () => {
   // Handler for dragging Gantt items
   const handleGanttItemMouseDown = (e, item) => {
     e.preventDefault();
-    const container = e.currentTarget.closest('.gantt-container');
+    const container = e.currentTarget.closest(".gantt-container");
     setChartContainer(container);
     const chartRect = container.getBoundingClientRect();
     setDragStartX(e.clientX - chartRect.left);
@@ -49,11 +51,9 @@ const ProjectPlanner = () => {
       Math.min(GANTT_DAYS - draggedItem.duration, initialStartDay + daysDelta)
     );
 
-    setGanttItems(items =>
-      items.map(item =>
-        item.id === draggedItem.id
-          ? { ...item, startDay: newStartDay }
-          : item
+    setGanttItems((items) =>
+      items.map((item) =>
+        item.id === draggedItem.id ? { ...item, startDay: newStartDay } : item
       )
     );
   };
@@ -61,18 +61,18 @@ const ProjectPlanner = () => {
   const handleMouseUp = () => {
     setIsDragging(false);
     setDraggedItem(null);
-    setChartContainer(null);  // Clear the reference
+    setChartContainer(null); // Clear the reference
   };
 
   // Update useEffect dependencies
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     }
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging, draggedItem, dragStartX, initialStartDay, chartContainer]);
 
@@ -94,7 +94,7 @@ const ProjectPlanner = () => {
     try {
       deliverableData = JSON.parse(e.dataTransfer.getData("deliverable"));
     } catch (err) {
-      console.error(err)
+      console.error(err);
       return;
     }
 
@@ -131,28 +131,28 @@ const ProjectPlanner = () => {
 
   const createDragPreview = (duration, color) => {
     // Create a preview element
-    const preview = document.createElement('div');
+    const preview = document.createElement("div");
     preview.className = `${color} rounded opacity-80`;
     preview.style.width = `${duration * GANTT_DAY_WIDTH}px`;
-    preview.style.height = '30px';
-    
+    preview.style.height = "30px";
+
     // Add to document temporarily (required for drag image)
-    preview.style.position = 'fixed';
-    preview.style.top = '-1000px';
+    preview.style.position = "fixed";
+    preview.style.top = "-1000px";
     document.body.appendChild(preview);
-    
+
     return preview;
   };
 
   const handleDragStart = (e, deliverable, person, color) => {
-    const duration = parseInt(deliverable.timeline.split(' ')[1]);
-    
+    const duration = parseInt(deliverable.timeline.split(" ")[1]);
+
     // Create the preview element
     const preview = createDragPreview(duration, color);
-    
+
     // Set the custom drag image
     e.dataTransfer.setDragImage(preview, 0, 15);
-    
+
     // Remove the preview element after a short delay
     setTimeout(() => {
       document.body.removeChild(preview);
@@ -172,14 +172,16 @@ const ProjectPlanner = () => {
 
   // Add handler for moving items up/down
   const moveGanttItem = (itemIndex, direction) => {
-    setGanttItems(items => {
+    setGanttItems((items) => {
       const newItems = [...items];
-      const targetIndex = direction === 'up' ? itemIndex - 1 : itemIndex + 1;
-      
+      const targetIndex = direction === "up" ? itemIndex - 1 : itemIndex + 1;
+
       // Swap items
-      [newItems[itemIndex], newItems[targetIndex]] = 
-      [newItems[targetIndex], newItems[itemIndex]];
-      
+      [newItems[itemIndex], newItems[targetIndex]] = [
+        newItems[targetIndex],
+        newItems[itemIndex],
+      ];
+
       return newItems;
     });
   };
@@ -192,7 +194,63 @@ const ProjectPlanner = () => {
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
       >
-        <h2 className="text-xl font-bold px-8 py-4">Project Timeline</h2>
+        <div className="flex items-center px-8 py-4">
+          <h2 className="text-xl font-bold">Project Timeline</h2>
+          <button
+            onClick={() => setShowHelp(true)}
+            className="ml-2 text-slate-400 hover:text-slate-600"
+          >
+            <HelpCircle className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Help Modal */}
+        <Modal isOpen={showHelp} onClose={() => setShowHelp(false)}>
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold">How to Play</h3>
+            <p className="text-slate-600 mb-2">
+              Your goal is to plan the project timeline for a new AI product.
+            </p>
+            <p className="text-slate-600">
+            Given a set of deliverables from your team members, organize them
+            on the timeline to minimise the project deadline.
+            </p>
+
+            <div className="space-y-3">
+              <section>
+                <h4 className="font-semibold text-lg">
+                  Adding Items to Timeline
+                </h4>
+                <p className="text-slate-600">
+                  Drag deliverable cards from team members and drop them onto
+                  the timeline. Each card will show up as a colored bar
+                  representing its duration.
+                </p>
+              </section>
+
+              <section>
+                <h4 className="font-semibold text-lg">Adjusting Timeline</h4>
+                <p className="text-slate-600">
+                  • Click and drag bars left or right to adjust their start date.
+                  <br />
+                  • Hover over a bar to reveal controls (for re-ordering or deleting a bar).
+                </p>
+              </section>
+
+              <section>
+                <h4 className="font-semibold text-lg">Planning Tips</h4>
+                <p className="text-slate-600">
+                  • Consider dependencies between team members!
+                  <br />
+                  • Pay attention to the requirements and outputs of each
+                  deliverable.
+                  <br />• Organize related tasks close to each other.
+                </p>
+              </section>
+            </div>
+          </div>
+        </Modal>
+
         <div className="relative h-full overflow-x-scroll pt-8">
           {/* Timeline */}
           <div className="px-8">
@@ -203,7 +261,10 @@ const ProjectPlanner = () => {
               {Array.from({ length: GANTT_DAYS }).map((_, i) => (
                 <div key={i} className="flex flex-col items-start">
                   <div className="w-px mt-px h-2 -mt-2 absolute bg-slate-300" />
-                  <div className="w-px mt-px min-h-[50vh] absolute bg-slate-100" style={{ height: `${117 + ganttItems.length * 40}px` }} />
+                  <div
+                    className="w-px mt-px min-h-[50vh] absolute bg-slate-100"
+                    style={{ height: `${117 + ganttItems.length * 40}px` }}
+                  />
                   <div className="absolute w-[100px] -ml-[50px] -mt-8 text-center text-xs text-slate-400">
                     Day {i + 1}
                   </div>
@@ -217,7 +278,10 @@ const ProjectPlanner = () => {
           </div>
 
           {/* Updated Gantt Items with move buttons */}
-          <div className="relative mt-4 ml-8 mr-8 min-h-[50vh]" style={{ height: `${100 + ganttItems.length * 40}px` }}>
+          <div
+            className="relative mt-4 ml-8 mr-8 min-h-[50vh]"
+            style={{ height: `${100 + ganttItems.length * 40}px` }}
+          >
             {ganttItems.map((item, index) => (
               <div
                 key={item.id}
@@ -229,9 +293,7 @@ const ProjectPlanner = () => {
                 }}
                 onMouseDown={(e) => handleGanttItemMouseDown(e, item)}
               >
-                {item.title} ({item.person})
-                
-                {/* Controls container */}
+                {item.title} ({item.person}){/* Controls container */}
                 <div className="invisible group-hover:visible absolute -right-2 -top-2 flex gap-1">
                   {/* Up arrow - show only if not first item */}
                   {index > 0 && (
@@ -239,26 +301,26 @@ const ProjectPlanner = () => {
                       className="bg-slate-700 hover:bg-slate-600 rounded-full w-5 h-5 flex items-center justify-center"
                       onClick={(e) => {
                         e.stopPropagation();
-                        moveGanttItem(index, 'up');
+                        moveGanttItem(index, "up");
                       }}
                     >
                       <ChevronUp className="w-3 h-3" />
                     </button>
                   )}
-                  
+
                   {/* Down arrow - show only if not last item */}
                   {index < ganttItems.length - 1 && (
                     <button
                       className="bg-slate-700 hover:bg-slate-600 rounded-full w-5 h-5 flex items-center justify-center"
                       onClick={(e) => {
                         e.stopPropagation();
-                        moveGanttItem(index, 'down');
+                        moveGanttItem(index, "down");
                       }}
                     >
                       <ChevronDown className="w-3 h-3" />
                     </button>
                   )}
-                  
+
                   {/* Delete button */}
                   <button
                     className="bg-red-500 hover:bg-red-400 rounded-full w-5 h-5 flex items-center justify-center"
@@ -281,7 +343,9 @@ const ProjectPlanner = () => {
         <div className="grid grid-cols-2 gap-4">
           {roles.map((role) => (
             <Card key={role.name} className="bg-white">
-              <CardHeader className={`${role.color} bg-opacity-10 rounded-t-lg`}>
+              <CardHeader
+                className={`${role.color} bg-opacity-10 rounded-t-lg`}
+              >
                 <div className="flex items-center space-x-4">
                   <div
                     className={`w-12 h-12 rounded-full ${role.color} flex items-center justify-center`}
