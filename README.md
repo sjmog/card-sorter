@@ -1,65 +1,47 @@
-# AI Team Project Planning Game
+# AI Project Task Sorter
 
-An interactive game that helps people understand how AI teams work together by putting them in the role of a project manager. Players learn about team dependencies, timelines, and coordination by planning and organizing deliverables from different AI roles.
-
-## Overview
-
-This game serves as an educational tool for:
-- Technical and non-technical professionals learning to manage AI projects
-- Organizations wanting to understand AI team dynamics
-- People interested in understanding how different AI roles interact and depend on each other
-
-## How to Play
-
-1. You are presented with a team of AI professionals, each with their own deliverables
-2. Drag deliverables from team members onto the timeline
-3. Organize the deliverables to create a feasible project plan
-4. Learn about dependencies between roles and their work
-5. Understand the typical timelines and sequence of AI project components
+An interactive learning game designed to help people understand the roles and responsibilities in modern AI/ML projects. Players sort tasks and technologies into their most relevant roles while racing against time to earn points.
 
 ## Features
 
-### Interactive Gantt Chart
-- Drag and drop deliverables onto the timeline
-- Adjust timing by dragging items left or right
-- Reorder items using up/down arrows
-- Remove items to try different arrangements
+- **Two Game Modes**:
+  - **Standard Mode**: Sort project deliverables and tasks to their corresponding AI/ML roles
+  - **Advanced Mode**: Match specific technologies and tools to the roles that typically use them
 
-### Team Roles
-Each role comes with specific deliverables:
-- Data Engineer: Data pipelines and infrastructure
-- ML Engineer: Model development and training
-- MLOps Engineer: Deployment and monitoring
-- AI Engineer: System integration
-- Prompt Engineer: Interaction design
-- AI Ethics Specialist: Ethical guidelines and testing
-- AI Product Manager: Requirements and coordination
+- **Interactive Drag-and-Drop**: Intuitive interface for sorting tasks and tools
+- **Time-Based Scoring**: Race against the clock to earn maximum points
+- **Progressive Difficulty**: Tasks build up as you correctly sort them
+- **Visual Feedback**: Immediate feedback on correct/incorrect placements
+- **Role Categories**:
+  - Data Engineer
+  - ML Engineer
+  - MLOps Engineer
+  - AI Engineer
+  - Prompt Engineer
+  - AI Ethics Specialist
 
-### Learning Outcomes
-- Understanding of AI project components
-- Recognition of dependencies between roles
-- Appreciation of project timing and sequencing
-- Knowledge of team coordination requirements
+## How to Play
 
-## Technical Implementation
+1. Choose between Standard or Advanced mode using the toggle switch
+2. Drag the task/tool card from the center to the role you think it belongs to
+3. Click "Check" to verify your answer
+4. Score points based on how quickly you make correct matches
+5. Watch out for the timer - faster sorting means more points!
 
-Built with:
-- React (Next.js)
+## Educational Value
+
+This game helps players:
+- Understand the distinct responsibilities of different AI/ML roles
+- Learn about common tools and technologies used in AI projects
+- Recognize how different roles collaborate in AI project delivery
+- Familiarize themselves with industry-standard deliverables
+
+## Technical Stack
+
+- Next.js for the framework
+- React for the UI components
 - Tailwind CSS for styling
-- Lucide React for icons
-- Drag and drop functionality
-
-## Project Structure
-
-```
-├── app/
-│   └── page.tsx           # Main page component
-├── components/
-│   ├── ProjectPlanner.jsx # Main game component
-│   └── ui/               # UI components
-└── data/
-    └── index.js          # Role and deliverable definitions
-```
+- Client-side state management with React hooks
 
 ## Getting Started
 
