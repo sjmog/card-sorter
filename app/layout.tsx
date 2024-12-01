@@ -14,13 +14,16 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "TechMap | AI Team Roles Explorer",
+  title: "TechMap | Project Manager",
   description:
-    "Interactive guide to understanding roles and responsibilities in modern AI teams. Explore how Data Engineers, ML Engineers, AI Engineers, and other specialists work together.",
+    "Interactive game where you play as a project manager, learning how different AI team roles work together by planning and organizing their deliverables.",
   keywords: [
     "TechMap",
-    "AI teams",
-    "Machine Learning roles",
+    "Project Management",
+    "AI Project Planning",
+    "Team Coordination",
+    "Project Timeline",
+    "Gantt Chart",
     "Data Engineer",
     "ML Engineer",
     "MLOps Engineer",
@@ -28,23 +31,23 @@ export const metadata: Metadata = {
     "Prompt Engineer",
     "AI Ethics Specialist",
     "AI Product Manager",
-    "AI team structure",
-    "AI careers",
+    "Project Dependencies",
+    "Team Collaboration",
   ],
   authors: [{ name: "TechMap" }],
   openGraph: {
-    title: "TechMap | AI Team Roles Explorer",
+    title: "TechMap | Project Manager",
     description:
-      "Interactive guide to understanding roles and responsibilities in modern AI teams",
+      "Learn AI project management through an interactive game where you coordinate team deliverables and manage timelines",
     type: "website",
     locale: "en_US",
-    siteName: "TechMap | AI Team Roles Explorer",
+    siteName: "TechMap | Project Manager",
   },
   twitter: {
     card: "summary_large_image",
-    title: "TechMap | AI Team Roles Explorer",
+    title: "TechMap | Project Manager",
     description:
-      "Interactive guide to understanding roles and responsibilities in modern AI teams",
+      "Learn AI project management through an interactive game where you coordinate team deliverables and manage timelines",
   },
   viewport: "width=device-width, initial-scale=1",
   robots: "index, follow",

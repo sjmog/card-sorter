@@ -1,36 +1,45 @@
-# AI Team Roles Explorer
+# AI Team Project Planning Game
 
-An interactive web application that helps teams understand the different roles in modern AI organizations, their responsibilities, and how they interact with each other.
+An interactive game that helps people understand how AI teams work together by putting them in the role of a project manager. Players learn about team dependencies, timelines, and coordination by planning and organizing deliverables from different AI roles.
 
 ## Overview
 
-This application serves as an educational tool for:
-- Technical and non-technical professionals looking to understand AI team structures
-- Organizations building or scaling their AI teams
-- People interested in transitioning into AI-related roles
+This game serves as an educational tool for:
+- Technical and non-technical professionals learning to manage AI projects
+- Organizations wanting to understand AI team dynamics
+- People interested in understanding how different AI roles interact and depend on each other
+
+## How to Play
+
+1. You are presented with a team of AI professionals, each with their own deliverables
+2. Drag deliverables from team members onto the timeline
+3. Organize the deliverables to create a feasible project plan
+4. Learn about dependencies between roles and their work
+5. Understand the typical timelines and sequence of AI project components
 
 ## Features
 
-### Role Exploration
-- Detailed descriptions of key AI team roles:
-  - Data Engineer
-  - ML Engineer
-  - MLOps Engineer
-  - AI Engineer
-  - Prompt Engineer
-  - AI Ethics Specialist
-  - AI Product Manager
+### Interactive Gantt Chart
+- Drag and drop deliverables onto the timeline
+- Adjust timing by dragging items left or right
+- Reorder items using up/down arrows
+- Remove items to try different arrangements
 
-### Interactive Elements
-- Role-specific information showing what each role needs and provides
-- Practical examples and technical details for each responsibility
-- Interactive comparisons showing how each role differs from others
-- Cross-linking between related roles for easy navigation
+### Team Roles
+Each role comes with specific deliverables:
+- Data Engineer: Data pipelines and infrastructure
+- ML Engineer: Model development and training
+- MLOps Engineer: Deployment and monitoring
+- AI Engineer: System integration
+- Prompt Engineer: Interaction design
+- AI Ethics Specialist: Ethical guidelines and testing
+- AI Product Manager: Requirements and coordination
 
-### Technical Glossary
-- Hover-enabled definitions for technical terms
-- Real-world examples for each concept
-- Context-specific terminology explanations
+### Learning Outcomes
+- Understanding of AI project components
+- Recognition of dependencies between roles
+- Appreciation of project timing and sequencing
+- Knowledge of team coordination requirements
 
 ## Technical Implementation
 
@@ -38,27 +47,32 @@ Built with:
 - React (Next.js)
 - Tailwind CSS for styling
 - Lucide React for icons
-- Client-side state management for interactions
+- Drag and drop functionality
 
 ## Project Structure
 
 ```
 ├── app/
-│ └── page.tsx # Main page component
+│   └── page.tsx           # Main page component
 ├── components/
-│ ├── Role.jsx # Individual role card component
-│ ├── Roles.jsx # Role list container
-│ ├── GlossaryTerm.js # Technical term tooltip component
-│ ├── RoleDifferencesTable.jsx # Role comparison component
-│ └── index.js # Component exports
+│   ├── ProjectPlanner.jsx # Main game component
+│   └── ui/               # UI components
 └── data/
-└── index.js # Role and glossary definitions
+    └── index.js          # Role and deliverable definitions
 ```
-
 
 ## Getting Started
 
-`yarn install`. Then `yarn dev`.
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   yarn install
+   ```
+3. Start the development server:
+   ```bash
+   yarn dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## License
 
