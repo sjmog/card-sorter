@@ -5,6 +5,25 @@ import { tasks } from "@/data/tasks";
 
 const roles = [...new Set(tasks.map((task) => task.roleTitle))];
 
+const toolsWithRoles = tasks.reduce((acc, task) => {
+  task.tools.forEach((tool) => {
+    if (!acc[tool]) {
+      acc[tool] = {
+        roles: new Set([task.roleTitle]),
+        context: task.description,
+      };
+    } else {
+      acc[tool].roles.add(task.roleTitle);
+    }
+  });
+  return acc;
+}, {});
+
+const toolCards = Object.entries(toolsWithRoles).map(([tool, data]) => ({
+  tool,
+  roleTitle: Array.from(data.roles)[0],
+}));
+
 const CardIcon = () => (
   <svg
     className="w-6 h-6"
@@ -19,7 +38,7 @@ const CardIcon = () => (
   </svg>
 );
 
-const TaskModal = ({ task, role, onClose }) => {
+const TaskModal = ({ task, role, onClose, isAdvancedMode }) => {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 relative">
@@ -34,24 +53,36 @@ const TaskModal = ({ task, role, onClose }) => {
             Assigned to: {role}
           </span>
         </div>
-        <h3 className="font-bold text-xl mb-4">{task.deliverableTitle}</h3>
-        <p className="text-gray-600 mb-6">{task.description}</p>
-        <div className="flex flex-wrap gap-2">
-          {task.tools.map((tool) => (
-            <span
-              key={tool}
-              className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded"
-            >
-              {tool}
-            </span>
-          ))}
-        </div>
+        <h3 className={`font-bold text-xl ${task.description ? "mb-4" : ""}`}>
+          {isAdvancedMode ? task.tool : task.deliverableTitle}
+        </h3>
+        {task.description && (
+          <p className="text-gray-600 mb-6">{task.description}</p>
+        )}
+        {!isAdvancedMode && task.tools && (
+          <div className="flex flex-wrap gap-2 justify-center">
+            {task.tools.map((tool) => (
+              <span
+                key={tool}
+                className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded"
+              >
+                {tool}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-const TaskCard = ({ task, isMinimized = false, stackIndex, role }) => {
+const TaskCard = ({
+  task,
+  isMinimized = false,
+  stackIndex,
+  role,
+  isAdvancedMode = false,
+}) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleDragStart = (e) => {
@@ -64,16 +95,6 @@ const TaskCard = ({ task, isMinimized = false, stackIndex, role }) => {
     e.currentTarget.classList.remove("opacity-50");
   };
 
-  const getFannedStyle = () => {
-    if (!isMinimized) return {};
-    return {
-      transform: `translate(${stackIndex ?? 0 * 20}px, ${
-        stackIndex ?? 0 * -10
-      }px)`,
-      zIndex: stackIndex ?? 0,
-    };
-  };
-
   return (
     <>
       <div
@@ -83,8 +104,8 @@ const TaskCard = ({ task, isMinimized = false, stackIndex, role }) => {
         onClick={() => isMinimized && setShowModal(true)}
         style={{
           right: isMinimized
-            ? `${stackIndex === 0 ? "-0.5rem" : `${stackIndex * 30}px`}`
-            : "-0.5rem",
+            ? `${stackIndex === 0 ? "-20px" : `${-20 + stackIndex * 35}px`}`
+            : "-20px",
         }}
         className={`
           bg-white rounded-lg shadow-lg
@@ -102,18 +123,24 @@ const TaskCard = ({ task, isMinimized = false, stackIndex, role }) => {
           </div>
         ) : (
           <>
-            <h3 className="font-bold text-lg mb-2">{task.deliverableTitle}</h3>
-            <p className="text-sm text-gray-600 mb-4">{task.description}</p>
-            <div className="flex flex-wrap gap-1 justify-center">
-              {task.tools.map((tool) => (
-                <span
-                  key={tool}
-                  className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
-                >
-                  {tool}
-                </span>
-              ))}
-            </div>
+            <h3 className={`font-bold text-lg ${task.description && "mb-2"}`}>
+              {isAdvancedMode ? task.tool : task.deliverableTitle}
+            </h3>
+            {task.description && (
+              <p className="text-sm text-gray-600 mb-4">{task.description}</p>
+            )}
+            {!isAdvancedMode && task.tools && (
+              <div className="flex flex-wrap gap-1 justify-center">
+                {task.tools.map((tool) => (
+                  <span
+                    key={tool}
+                    className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
+                  >
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            )}
           </>
         )}
       </div>
@@ -122,6 +149,7 @@ const TaskCard = ({ task, isMinimized = false, stackIndex, role }) => {
           task={task}
           role={role}
           onClose={() => setShowModal(false)}
+          isAdvancedMode={isAdvancedMode}
         />
       )}
     </>
@@ -141,6 +169,7 @@ const DropZone = ({
   animateState,
   task,
   correctCards = [],
+  isAdvancedMode,
   ...props
 }) => {
   const [isOver, setIsOver] = useState(false);
@@ -190,23 +219,62 @@ const DropZone = ({
           task={task}
           isMinimized={animateState === "correct"}
           role={role}
+          isAdvancedMode={isAdvancedMode}
         />
       )}
       {!isStack &&
         correctCards.map((card, index) => (
           <TaskCard
-            key={card.deliverableTitle}
+            key={isAdvancedMode ? card.tool : card.deliverableTitle}
             task={card}
             isMinimized={true}
             stackIndex={index}
             role={role}
+            isAdvancedMode={isAdvancedMode}
           />
         ))}
     </div>
   );
 };
 
+const TIMER_DURATION = 30; // seconds
+const MAX_POINTS = 100;
+const MIN_POINTS = 10;
+
+const TimerBar = ({ timeLeft, duration, isFlashing }) => {
+  const percentage = Math.max(10, (timeLeft / duration) * 100);
+  const currentPoints = Math.max(
+    MIN_POINTS,
+    Math.floor((timeLeft / duration) * MAX_POINTS)
+  );
+
+  return (
+    <div className="w-full h-8 bg-gray-200 rounded-full relative">
+      <div
+        className={`
+          h-full rounded-full transition-all duration-300
+          ${isFlashing ? "bg-red-500" : "bg-blue-500"}
+        `}
+        style={{ width: `${percentage}%` }}
+      />
+      <div className="absolute top-0 left-0 w-full h-full flex justify-between px-4 items-center text-sm font-medium">
+        <span className="text-white font-bold z-10">
+          +{currentPoints} points
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const ScoreDisplay = ({ score }) => (
+  <div className="flex items-baseline justify-center space-x-1">
+    <p className="text-2xl font-bold text-blue-600">{score}</p>
+    <h3 className="text-sm font-medium text-gray-600">Score</h3>
+  </div>
+);
+
 const CardSort = () => {
+  const [isAdvancedMode, setIsAdvancedMode] = useState(false);
   const [shuffledTasks, setShuffledTasks] = useState([]);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [placedCard, setPlacedCard] = useState(null);
@@ -215,6 +283,10 @@ const CardSort = () => {
   const [correctPlacements, setCorrectPlacements] = useState({});
   const [completedTasks, setCompletedTasks] = useState(new Set());
   const [isGameComplete, setIsGameComplete] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
+  const [score, setScore] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(true);
+  const [isBarFlashing, setIsBarFlashing] = useState(false);
 
   useEffect(() => {
     const shuffleArray = (array) => {
@@ -226,8 +298,25 @@ const CardSort = () => {
       return shuffled;
     };
 
-    setShuffledTasks(shuffleArray(tasks));
-  }, []);
+    setShuffledTasks(shuffleArray(isAdvancedMode ? toolCards : tasks));
+  }, [isAdvancedMode]);
+
+  useEffect(() => {
+    if (!isTimerRunning) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          setIsTimerRunning(false);
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isTimerRunning]);
 
   const handleDrop = (targetRole) => {
     setPlacedCard(targetRole);
@@ -239,15 +328,30 @@ const CardSort = () => {
     const currentTask = shuffledTasks[currentTaskIndex];
     const isCorrect = placedCard === currentTask.roleTitle;
 
+    if (isCorrect) {
+      setScore(
+        (prev) => Math.round(prev + (timeLeft / TIMER_DURATION) * 100),
+        0
+      );
+    } else {
+      // Flash the bar red and reduce points
+      setIsBarFlashing(true);
+      setTimeout(() => setIsBarFlashing(false), 300);
+      setTimeLeft((prev) => Math.max(MIN_POINTS, prev - 6));
+    }
+
     setButtonColor(isCorrect ? "bg-green-500" : "bg-red-500");
     setAnimateState(isCorrect ? "correct" : "incorrect");
 
     if (!isCorrect) {
       setPlacedCard(null);
     } else {
+      const taskIdentifier = isAdvancedMode
+        ? currentTask.tool
+        : currentTask.deliverableTitle;
       const updatedCompletedTasks = new Set([
         ...completedTasks,
-        currentTask.deliverableTitle,
+        taskIdentifier,
       ]);
 
       setCorrectPlacements((prev) => ({
@@ -261,7 +365,10 @@ const CardSort = () => {
         setAnimateState(null);
 
         const nextTaskIndex = shuffledTasks.findIndex(
-          (task) => !updatedCompletedTasks.has(task.deliverableTitle)
+          (task) =>
+            !updatedCompletedTasks.has(
+              isAdvancedMode ? task.tool : task.deliverableTitle
+            )
         );
 
         if (nextTaskIndex === -1) {
@@ -270,6 +377,7 @@ const CardSort = () => {
           setCurrentTaskIndex(nextTaskIndex);
         }
         setPlacedCard(null);
+        setTimeLeft(TIMER_DURATION); // Reset timer to full
       }, 1500);
     }
 
@@ -281,17 +389,68 @@ const CardSort = () => {
     }
   };
 
+  const handleModeToggle = () => {
+    setIsAdvancedMode(!isAdvancedMode);
+    setCurrentTaskIndex(0);
+    setPlacedCard(null);
+    setAnimateState(null);
+    setButtonColor("bg-blue-500");
+    setCorrectPlacements({});
+    setCompletedTasks(new Set());
+    setIsGameComplete(false);
+    setTimeLeft(TIMER_DURATION);
+    setScore(0);
+    setIsTimerRunning(true);
+  };
+
   if (shuffledTasks.length === 0) {
     return null;
   }
 
   return (
-    <div className="h-screen w-full bg-gray-50 p-8">
+    <div className="h-screen w-full bg-gray-50 p-8 relative">
+      <div className="flex items-center justify-center space-x-4">
+        <div className="flex-shrink-0 w-[120px] flex items-center justify-center">
+          <ScoreDisplay score={score} />
+        </div>
+
+        <div className="flex-grow">
+          <TimerBar
+            timeLeft={timeLeft}
+            duration={TIMER_DURATION}
+            isFlashing={isBarFlashing}
+          />
+        </div>
+
+        <div className="flex-shrink-0 w-[180px] flex items-center gap-3">
+          <span className="text-sm font-medium">Advanced Mode</span>
+          <button
+            onClick={handleModeToggle}
+            className={`
+              relative inline-flex h-6 w-11 items-center rounded-full
+              transition-colors focus:outline-none
+              ${isAdvancedMode ? "bg-blue-600" : "bg-gray-200"}
+            `}
+          >
+            <span
+              className={`
+                inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                ${isAdvancedMode ? "translate-x-6" : "translate-x-1"}
+              `}
+            />
+          </button>
+        </div>
+      </div>
+
       <div className="h-full max-w-7xl mx-auto flex gap-12">
         <div className="w-1/3 flex flex-col items-center justify-center">
-          <h2 className="text-center text-xl font-semibold mb-6">
+          <h2 className="text-center text-lg font-semibold mb-6">
             {isGameComplete
-              ? "Great job! You've sorted all the tasks!"
+              ? isAdvancedMode
+                ? "Great job! You've sorted all the techs!"
+                : "Great job! You've sorted all the tasks!"
+              : isAdvancedMode
+              ? "Which role is most associated with this tool?"
               : "Which role does this task apply to?"}
           </h2>
           {!isGameComplete && (
@@ -303,6 +462,7 @@ const CardSort = () => {
                 hasCard={placedCard === null}
                 task={shuffledTasks[currentTaskIndex]}
                 animateState={animateState}
+                isAdvancedMode={isAdvancedMode}
               />
               {placedCard && (
                 <button
@@ -326,6 +486,7 @@ const CardSort = () => {
               animateState={animateState}
               task={shuffledTasks[currentTaskIndex]}
               correctCards={correctPlacements[role] || []}
+              isAdvancedMode={isAdvancedMode}
             />
           ))}
         </div>

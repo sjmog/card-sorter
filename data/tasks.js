@@ -4,7 +4,7 @@ export const tasks = [
     deliverableTitle: "Data Pipeline Architecture",
     description:
       "Map out all data input sources and output destinations using Draw.io or LucidChart to create visual diagrams, while documenting the specifications in Confluence to ensure the team has a clear understanding of data flow.",
-    tools: ["Draw.io", "LucidChart", "Confluence"],
+    tools: ["LucidChart", "Confluence"],
   },
   {
     roleTitle: "Data Engineer",
@@ -131,5 +131,96 @@ export const tasks = [
     description:
       "Create custom analysis tools using AIF360 or Fairlearn to identify potential biases in model behavior and data.",
     tools: ["AIF360", "Fairlearn"],
+  },
+  {
+    roleTitle: "ML Engineer",
+    deliverableTitle: "Data Preprocessing Pipeline",
+    description:
+      "Implement robust data preprocessing pipelines using NumPy and Pandas, including feature engineering, normalization, and validation steps to ensure high-quality model inputs.",
+    tools: ["NumPy", "Pandas"],
+  },
+  {
+    roleTitle: "ML Engineer",
+    deliverableTitle: "Model Training Pipeline",
+    description:
+      "Develop automated training pipelines using PyTorch Lightning or Keras, incorporating cross-validation, early stopping, and model checkpointing for reliable model development.",
+    tools: ["PyTorch Lightning", "Keras"],
+  },
+  {
+    roleTitle: "ML Engineer",
+    deliverableTitle: "Model Evaluation Framework",
+    description:
+      "Create comprehensive evaluation scripts using Scikit-learn and custom metrics, ensuring thorough assessment of model performance across different scenarios and data subsets.",
+    tools: ["Scikit-learn", "Python"],
+  },
+  {
+    roleTitle: "MLOps Engineer",
+    deliverableTitle: "Model Versioning System",
+    description:
+      "Implement DVC (Data Version Control) and Git LFS for managing model artifacts and large datasets, ensuring reproducibility and efficient collaboration.",
+    tools: ["DVC", "Git LFS"],
+  },
+  {
+    roleTitle: "MLOps Engineer",
+    deliverableTitle: "Model Serving Infrastructure",
+    description:
+      "Set up model serving using TorchServe or TensorFlow Serving, with containerization and load balancing for scalable production deployment.",
+    tools: ["TorchServe", "TensorFlow Serving", "Docker"],
+  },
+  {
+    roleTitle: "MLOps Engineer",
+    deliverableTitle: "A/B Testing Framework",
+    description:
+      "Develop infrastructure for A/B testing using tools like Optimizely or custom solutions, enabling systematic comparison of model versions in production.",
+    tools: ["Optimizely", "Python"],
+  },
+  {
+    roleTitle: "AI Engineer",
+    deliverableTitle: "LLM Integration Framework",
+    description:
+      "Develop a robust framework using LangChain or LlamaIndex for integrating and managing multiple LLM providers, ensuring fallbacks and optimal prompt handling.",
+    tools: ["LangChain", "LlamaIndex"],
+  },
+  {
+    roleTitle: "AI Engineer",
+    deliverableTitle: "Caching Infrastructure",
+    description:
+      "Implement efficient caching mechanisms using Redis or MongoDB to store API responses and intermediate results, optimizing performance and reducing API costs.",
+    tools: ["Redis", "MongoDB"],
+  },
+  {
+    roleTitle: "Prompt Engineer",
+    deliverableTitle: "Prompt Testing Framework",
+    description:
+      "Create systematic testing frameworks for evaluating prompt effectiveness across different scenarios and edge cases, using custom evaluation metrics.",
+    tools: ["Python", "Jupyter"],
+  },
+  {
+    roleTitle: "Prompt Engineer",
+    deliverableTitle: "Prompt Version Control",
+    description:
+      "Implement version control and documentation systems for prompts using Git and specialized metadata tracking, ensuring prompt evolution can be tracked and managed.",
+    tools: ["Git", "YAML"],
+  },
+  {
+    roleTitle: "AI Ethics Specialist",
+    deliverableTitle: "Monitoring Dashboard",
+    description:
+      "Create dashboards using Streamlit or Dash to visualize key fairness metrics and model behavior patterns across different demographic groups.",
+    tools: ["Streamlit", "Dash"],
+  },
+  {
+    roleTitle: "AI Ethics Specialist",
+    deliverableTitle: "Documentation Framework",
+    description:
+      "Develop standardized documentation templates using Model Cards and DataSheets for Datasets, ensuring transparent communication of model and data characteristics.",
+    tools: ["Markdown", "Jupyter"],
+  },
+  {
+    roleTitle: "AI Ethics Specialist",
+    deliverableTitle: "Automated Ethics Checks",
+    description:
+      "Implement automated testing pipelines that check for common ethical issues, bias patterns, and fairness metrics as part of the CI/CD process.",
+    tools: ["Python", "GitHub Actions"],
   },
 ];
