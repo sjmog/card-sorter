@@ -19,7 +19,7 @@ const ProjectPlanner = () => {
   const [draggedItem, setDraggedItem] = useState(null);
   const [initialStartDay, setInitialStartDay] = useState(0);
   const [chartContainer, setChartContainer] = useState(null);
-  const [showHelp, setShowHelp] = useState(false);
+  const [showHelp, setShowHelp] = useState(true);
 
   const GANTT_DAYS = 360;
   const GANTT_DAY_WIDTH = 50;
