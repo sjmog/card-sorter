@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { User, ChevronUp, ChevronDown } from "lucide-react";
 import { roles } from "@/data";
@@ -13,58 +13,68 @@ const ProjectPlanner = () => {
   // Add state for tracking drag operation on Gantt items
   const [draggedGanttItem, setDraggedGanttItem] = useState(null);
   const [dragStartX, setDragStartX] = useState(0);
+  // Add state for tracking mouse position during drag
+  const [isDragging, setIsDragging] = useState(false);
+  const [draggedItem, setDraggedItem] = useState(null);
+  const [initialStartDay, setInitialStartDay] = useState(0);
+  const [chartContainer, setChartContainer] = useState(null);
 
   const GANTT_DAYS = 360;
   const GANTT_DAY_WIDTH = 50;
 
   // Handler for dragging Gantt items
-  const handleGanttItemDragStart = (e, item) => {
-    setDraggedGanttItem(item);
-    const chartRect = e.currentTarget
-      .closest(".gantt-container")
-      .getBoundingClientRect();
+  const handleGanttItemMouseDown = (e, item) => {
+    e.preventDefault();
+    const container = e.currentTarget.closest('.gantt-container');
+    setChartContainer(container);
+    const chartRect = container.getBoundingClientRect();
     setDragStartX(e.clientX - chartRect.left);
-
-    // Create an empty transparent element as drag image
-    const emptyElement = document.createElement('div');
-    emptyElement.style.display = 'none';
-    document.body.appendChild(emptyElement);
-    e.dataTransfer.setDragImage(emptyElement, 0, 0);
-    setTimeout(() => {
-      document.body.removeChild(emptyElement);
-    }, 0);
-
-    e.stopPropagation();
+    setDraggedItem(item);
+    setInitialStartDay(item.startDay);
+    setIsDragging(true);
   };
 
-  const handleGanttItemDrag = (e) => {
-    if (!draggedGanttItem) return;
+  // Update mousemove handler to use stored container reference
+  const handleMouseMove = (e) => {
+    if (!isDragging || !draggedItem || !chartContainer) return;
 
-    const chartRect = e.currentTarget
-      .closest(".gantt-container")
-      .getBoundingClientRect();
+    const chartRect = chartContainer.getBoundingClientRect();
     const currentX = e.clientX - chartRect.left;
     const deltaX = currentX - dragStartX;
-    const daysPerPixel = 30 / chartRect.width;
+    const daysPerPixel = 1 / GANTT_DAY_WIDTH;
     const daysDelta = Math.round(deltaX * daysPerPixel);
 
     const newStartDay = Math.max(
       1,
-      Math.min(30, draggedGanttItem.startDay + daysDelta)
+      Math.min(GANTT_DAYS - draggedItem.duration, initialStartDay + daysDelta)
     );
 
-    setGanttItems((items) =>
-      items.map((item) =>
-        item.id === draggedGanttItem.id
+    setGanttItems(items =>
+      items.map(item =>
+        item.id === draggedItem.id
           ? { ...item, startDay: newStartDay }
           : item
       )
     );
   };
 
-  const handleGanttItemDragEnd = () => {
-    setDraggedGanttItem(null);
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    setDraggedItem(null);
+    setChartContainer(null);  // Clear the reference
   };
+
+  // Update useEffect dependencies
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, draggedItem, dragStartX, initialStartDay, chartContainer]);
 
   // Delete Gantt item and make deliverable available again
   const handleDeleteGanttItem = (itemId, deliverableTitle) => {
@@ -217,10 +227,7 @@ const ProjectPlanner = () => {
                   width: `${item.duration * GANTT_DAY_WIDTH}px`,
                   top: `${index * 40}px`,
                 }}
-                draggable
-                onDragStart={(e) => handleGanttItemDragStart(e, item)}
-                onDrag={handleGanttItemDrag}
-                onDragEnd={handleGanttItemDragEnd}
+                onMouseDown={(e) => handleGanttItemMouseDown(e, item)}
               >
                 {item.title} ({item.person})
                 
