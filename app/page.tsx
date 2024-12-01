@@ -1,5 +1,5 @@
-import ProjectPlanner from "@/components/ProjectPlanner";
+import CardSort from "@/components/CardSort";
 
 export default function Home() {
-  return <ProjectPlanner />;
+  return <CardSort />;
 }
